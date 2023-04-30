@@ -66,29 +66,29 @@ const Tasks = () => {
     <>
       <Navbar />
       <div className="container mx-auto">
-        <div className="flex justify-center mt-10 space-x-10 ">
+        <div className="flex justify-center mt-10  flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-10  ">
           <input
             type="text"
             placeholder="Learn Solidity"
-            className="w-[20%] caret-pink-500 bg-transparent p-3 text-xl bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text text-transparent border border-fuchsia-500 rounded-md placeholder:text-transparent   placeholder:font-primary placeholder:text-lg focus:outline-none focus:border-purple-500 focus:ring-purple-500 focus:ring-1 "
+            className="w-full md:w-[20%] caret-pink-500 bg-transparent p-3 text-xl bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text text-transparent border border-fuchsia-500 rounded-md placeholder:text-transparent   placeholder:font-primary placeholder:text-lg focus:outline-none focus:border-purple-500 focus:ring-purple-500 focus:ring-1 "
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
           <input
             type="text"
             placeholder="Mappings,Functions etc"
-            className="w-[20%] caret-pink-500 bg-transparent p-3 text-xl bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text text-transparent border border-fuchsia-500 rounded-md placeholder:text-transparent  placeholder:font-primary placeholder:text-lg focus:outline-none focus:border-purple-500 focus:ring-purple-500 focus:ring-1"
+            className="w-full md:w-[20%] caret-pink-500 bg-transparent p-3 text-xl bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text text-transparent border border-fuchsia-500 rounded-md placeholder:text-transparent  placeholder:font-primary placeholder:text-lg focus:outline-none focus:border-purple-500 focus:ring-purple-500 focus:ring-1"
             value={content}
             onChange={(e) => setContent(e.target.value)}
           />
           <button
-            className="w-[20%] px-12 py-3 rounded text-md font-primary text-white  bg-gradient-to-r from-blue-500 to-purple-500 "
+            className="w-full md:w-[20%] px-12 py-3 rounded text-md font-primary text-white  bg-gradient-to-r from-blue-500 to-purple-500 "
             onClick={() => handleAdd()}
           >
             Add Note
           </button>
           <button
-            className="w-[20%] px-12 py-3 rounded text-md font-primary text-white  bg-gradient-to-r from-blue-500 to-purple-500"
+            className="w-full md:w-[20%] px-12 py-3 rounded text-md font-primary text-white  bg-gradient-to-r from-blue-500 to-purple-500"
             onClick={fetchData}
           >
             Fetch my Notes{" "}
