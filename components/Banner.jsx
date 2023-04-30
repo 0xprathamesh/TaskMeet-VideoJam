@@ -18,7 +18,7 @@ const Banner = () => {
   };
 
   return (
-    <section className="bg-gray-900 text-white h-[80vh] flex justify-center items-center">
+    <section className="bg-[#121214] text-white h-[80vh] flex justify-center items-center">
       <div className="container mx-auto max-w-4xl text-center">
         <div className="mx-auto text-center">
           <h1 className="lg:text-[70px] font-secondary bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text text-5xl text-transparent font-bold">
@@ -54,4 +54,4 @@ const Banner = () => {
 };
 
 export default Banner;
-// <h1>Organize Your Meeting Tasks Effortlessly</h1>
+

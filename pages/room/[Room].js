@@ -1,188 +1,93 @@
-import { useEventListener, useHuddle01 } from "@huddle01/react";
-import { Video } from "@huddle01/react/components";
-import {
-  useLobby,
-  useMeetingMachine,
-  useAudio,
-  useVideo,
-  useRoom,
-  usePeers,
-} from "@huddle01/react/hooks";
-import { useEffect, useState, useRef } from "react";
+import { HuddleIframe } from "@huddle01/huddle01-iframe";
+import React, { useEffect, useState } from "react";
+import getContract from "@/utils/getContract";
+import Modal from "@/components/elements/Modal";
+import Navbar from "@/components/Navbar";
 import { useRouter } from "next/router";
 import { useAccount } from "wagmi";
-import ControlButton from "@/components/elements/ControlButton";
-import Modal from "@/components/elements/Modal";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-const Room = () => {
+const iframeConfig = {
+  roomUrl: "https://iframe.huddle01.com/jcl-gnxm-qqe",
+  height: "700px",
+  width: "80%",
+  noBorder: true, // false by default
+};
+const Meet = () => {
+  const [title, setTitle] = useState();
+  const [content, setContent] = useState();
+  const [showModal, setShowModal] = useState(false);
+  const [showButton, setShowButton] = useState(false);
   const router = useRouter();
   const { Room } = router.query;
   const { address } = useAccount();
-  console.log(address);
-  const { initialize, isInitialized } = useHuddle01();
-  const { joinLobby } = useLobby();
-  const { state } = useMeetingMachine();
-  const {
-    fetchAudioStream,
-    stopAudioStream,
-    error: micError,
-    produceAudio,
-    stopProducingAudio,
-    stream: micStream,
-  } = useAudio();
-  const [isMuted, setIsMuted] = useState(true);
-  const {
-    fetchVideoStream,
-    stopVideoStream,
-    error: camError,
-    produceVideo,
-    stopProducingVideo,
-    stream: camStream,
-  } = useVideo();
-  const [isWebcamOn, setIsWebcamOn] = useState(false);
-  const { joinRoom, leaveRoom } = useRoom();
-  const { peerIds, peers } = usePeers();
-  const [showModal, setShowModal] = useState(false);
-
-  useEffect(() => {
-    // its preferable to use env vars to store projectId
-    initialize("KL1r3E1yHfcrRbXsT4mcE-3mK60Yc3YR");
-  }, []);
-
-  const videoRef = useRef();
-  useEventListener("lobby:cam-on", () => {
-    if (state.context.camStream && videoRef.current)
-      videoRef.current.srcObject = state.context.camStream;
-  });
-
+  const handleAdd = async () => {
+    let contract = await getContract();
+    const tx = await contract.addTask(title, content, false);
+    await tx.wait();
+    await setTitle("");
+    await setContent("");
+  };
   useEffect(() => {
     if (address) {
       router.replace(`/room/${address}`);
     }
   }, [address]);
-
   useEffect(() => {
-    return () => {
-      <div className="w-[40%] border-2 border-gray-500 rounded-lg overflow-hidden my-20 relative h-[40vh]">
-        <video ref={videoRef} autoPlay muted playsInline></video>
-      </div>;
-    };
-  });
-
-  const toggleAudio = () => {
-    if (isMuted) {
-      fetchAudioStream();
-    } else {
-      stopAudioStream();
-    }
-    setIsMuted(!isMuted);
-  };
-
-  const toggleWebcam = () => {
-    if (isWebcamOn) {
-      stopVideoStream();
-    } else {
-      fetchVideoStream();
-    }
-    setIsWebcamOn(!isWebcamOn);
-  };
-
+    const timer = setTimeout(() => {
+      setShowButton(true);
+    }, 20000);
+    return () => clearTimeout(timer);
+  }, []);
   return (
     <>
-      <div className="container mx-auto">
-        <div className="">
-          <h2 className="text-xl">Room State</h2>
-          <h3>{JSON.stringify(state.value)}</h3>
-          {isInitialized ? "Hello World!" : "Please initialize"}
+      <Navbar />
+      <div className="bg-[#121214] h-auto">
+        <div className="flex justify-center items-center mx-auto rounded-xl ">
+          <HuddleIframe config={iframeConfig} />
         </div>
-
-        <div className="flex justify-around items-center">
-          <div className="w-[40%] border-2 border-gray-500 rounded-lg overflow-hidden my-20 relative h-[40vh]">
-            <video ref={videoRef} autoPlay muted playsInline></video>
-          </div>
-
-          <div className="w-[40%] border-2 border-gray-500 rounded-lg overflow-hidden my-20 relative h-[40vh]">
-            {Object.values(peers)
-              .filter((peer) => peer.cam)
-              .map((peer) => {
-                return (
-                  <Video
-                    key={peer.peerId}
-                    peerId={peer.peerId}
-                    track={peer.cam}
-                    debug
-                    autoPlay
-                    playsInline
-                    style={{ width: "100%" }}
-                  />
-                );
-              })}
-          </div>
+        <div className="mt-8 flex flex-wrap justify-center gap-4">
+          {showButton && (
+            <div
+              onClick={() => setShowModal(true)}
+              className="block w-full rounded px-12 py-3 text-md font-medium font-secondary text-white sm:w-auto bg-gradient-to-r from-blue-500 to-purple-500 "
+            >
+              Add Tasks
+            </div>
+          )}
         </div>
-        <div className="flex justify-center items-center max-w-4xl p-3 my-10  mx-auto bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg ">
-          <ControlButton
-            disabled={!joinLobby.isCallable}
-            onClick={() => joinLobby("mql-yjpp-evn")}
-            label={"Join looby"}
-          />
-          <ControlButton
-            disabled={
-              isWebcamOn
-                ? !stopVideoStream.isCallable
-                : !fetchVideoStream.isCallable
-            }
-            onClick={toggleWebcam}
-            label={isWebcamOn ? "Camera Off" : "Camera On"}
-          />
-          <ControlButton
-            disabled={
-              isMuted
-                ? !fetchAudioStream.isCallable
-                : !stopAudioStream.isCallable
-            }
-            onClick={toggleAudio}
-            label={isMuted ? "Mic On " : "Mic Off"}
-          />
-
-          <ControlButton
-            disabled={!joinRoom.isCallable}
-            onClick={joinRoom}
-            label={"Join Room"}
-          />
-          <ControlButton
-            disabled={!leaveRoom.isCallable}
-            onClick={leaveRoom}
-            label={"Leave Room"}
-          />
-
-          <ControlButton
-            disabled={!produceVideo.isCallable}
-            onClick={() => produceVideo(camStream)}
-            label={"Share Video"}
-          />
-          <ControlButton
-            disabled={!produceAudio.isCallable}
-            onClick={() => produceAudio(micStream)}
-            label={"Share Audio"}
-          />
-          <div className="hover:text-black">
-            <ul className="cursor-pointer" onClick={() => setShowModal(true)}>
-              <li className="mx-2 font-primary">Add Note</li>
-            </ul>
-          </div>
-        </div>
-        <ToastContainer />
       </div>
       <Modal isVisible={showModal} onClose={() => setShowModal(false)}>
-        <div className="py-3 px-3 lg:px-4 text-left">
-          <h3 className="font-medium font-primary">
+        <div className="py-3 px-3 lg:px-4 text-center">
+          <h3 className=" font-primary mb-2 text-2xl  bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text">
             Add Your Task
           </h3>
-          <form action="#" className="space-y-6">
+          <form
+            className="space-y-6"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleAdd();
+            }}
+          >
             <div>
-              {/* <label className="block mb-2 text-sm font-medium ">Your Mail</label> */}
-              <input type="text" placeholder="Enter Note Title" />
+              <input
+                type="text"
+                placeholder="Enter Task Title"
+                className="w-[70%] caret-pink-500 bg-transparent p-3 text-xl bg-gradient-to-r from-green-300 via-blue-500 font-primary to-purple-600 bg-clip-text text-transparent border border-fuchsia-500 rounded-md placeholder:text-transparent mx-auto my-4 placeholder:font-primary focus:outline-none focus:border-purple-500 focus:ring-purple-500 focus:ring-1 "
+                onChange={(e) => setTitle(e.target.value)}
+              />
+              <textarea
+                type="text"
+                placeholder="Enter Task Info"
+                className="w-[70%] caret-pink-500 bg-transparent p-3 text-xl bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text text-transparent border border-fuchsia-500 rounded-md placeholder:text-transparent mx-auto my-4 placeholder:font-primary focus:outline-none focus:border-purple-500 focus:ring-purple-500 focus:ring-1 font-primary "
+                onChange={(e) => setContent(e.target.value)}
+              />
+            </div>
+            <div className="mx-auto">
+              <button
+                type="submit"
+                className="w-[70%] px-12 py-3  rounded text-md font-primary text-white  bg-gradient-to-r from-blue-500 to-purple-500 "
+              >
+                Add Tasks
+              </button>
             </div>
           </form>
         </div>
@@ -190,4 +95,5 @@ const Room = () => {
     </>
   );
 };
-export default Room;
+
+export default Meet;

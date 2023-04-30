@@ -6,9 +6,11 @@ const Navbar = () => {
     <header className="py-4 mt-5">
       <div className="container mx-auto  ">
         <div className="flex justify-between items-center">
-          <h1 className="text-xl sm:text-2xl font-primary font-semibold  whitespace-nowrap bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text text-transparent ">
-            TaskMeet
-          </h1>
+          <Link href="/">
+            <h1 className="text-xl sm:text-2xl font-primary font-semibold  whitespace-nowrap bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text text-transparent ">
+              TaskMeet
+            </h1>
+          </Link>
           <div className="flex justify-between items-center">
             <Link href="/tasks">
               {" "}
