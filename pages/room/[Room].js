@@ -6,7 +6,7 @@ import Navbar from "@/components/Navbar";
 import { useRouter } from "next/router";
 import { useAccount } from "wagmi";
 const iframeConfig = {
-  roomUrl: "https://iframe.huddle01.com/jcl-gnxm-qqe",
+  roomUrl: "https://iframe.huddle01.com/czh-xciy-zub",
   height: "700px",
   width: "80%",
   noBorder: true, // false by default
