@@ -10,7 +10,7 @@ const client = createClient(
   getDefaultClient({
     appName: "Task Management App",
     infuraId,
-    chains: [mainnet, filecoinHyperspace],
+    chains: [filecoinHyperspace, mainnet],
   })
 );
 export default function App({ Component, pageProps }) {
