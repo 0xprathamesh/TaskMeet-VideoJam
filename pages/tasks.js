@@ -85,13 +85,13 @@ const Tasks = () => {
             className="w-full md:w-[20%] px-12 py-3 rounded text-md font-primary text-white  bg-gradient-to-r from-blue-500 to-purple-500 "
             onClick={() => handleAdd()}
           >
-            Add Note
+            Add Task
           </button>
           <button
             className="w-full md:w-[20%] px-12 py-3 rounded text-md font-primary text-white  bg-gradient-to-r from-blue-500 to-purple-500"
             onClick={fetchData}
           >
-            Fetch my Notes{" "}
+            Fetch Your Tasks{" "}
           </button>
         </div>
 
@@ -111,7 +111,7 @@ const Tasks = () => {
         {connected && dataExists && !loading && (
           <div>
             <h1 className=" text-4xl m-2 font-secondary items-center text-center mt-16">
-              My Notes 📝
+              My Tasks 📝
             </h1>
 
             <div className="flex flex-wrap mt-10">
